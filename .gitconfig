@@ -1,0 +1,19 @@
+[user]
+	name = Jeasine Ma
+	email = jeasinema@gmail.com
+
+[alias]
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+
+[merge]
+	tool = vimdiff
+
+[core]
+	editor = vim
+    excludesfile = ~/.gitignore_global
+
+[diff]
+    tool = vimdiff
+
+[push]
+	default = simple
