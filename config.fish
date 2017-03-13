@@ -29,3 +29,17 @@ function gi
 end
 #for cling
 set -x PATH $PATH ~/Downloads/cling_2016-10-09_mac1010/bin
+#for linaro armlinux-gcc
+set -x PATH $PATH /usr/local/linaro/arm-linux-gnueabihf/bin
+# for homebrew bottles
+source ~/.bash_profile
+# for locale info
+set -x LC_ALL en_US.UTF-8
+set -x LANG en_US.UTF-8
+set -g fish_user_paths "/usr/local/sbin" $fish_user_paths
+# for google app engine
+set -x PATH $PATH /usr/local/google_appengine
+# for anaconda
+set -x PATH $PATH ~/anaconda3/bin
+set -g fish_user_paths "/usr/local/opt/curl/bin" $fish_user_paths
+set -g fish_user_paths "/usr/local/opt/openssl@1.1/bin" $fish_user_paths
