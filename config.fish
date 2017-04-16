@@ -39,7 +39,3 @@ set -x LANG en_US.UTF-8
 set -g fish_user_paths "/usr/local/sbin" $fish_user_paths
 # for google app engine
 set -x PATH $PATH /usr/local/google_appengine
-# for anaconda
-set -x PATH $PATH ~/anaconda3/bin
-set -g fish_user_paths "/usr/local/opt/curl/bin" $fish_user_paths
-set -g fish_user_paths "/usr/local/opt/openssl@1.1/bin" $fish_user_paths
