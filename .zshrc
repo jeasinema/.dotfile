@@ -91,6 +91,6 @@ source $ZSH/oh-my-zsh.sh
 #for ROS
 source /opt/ros/kinetic/setup.zsh
 #export ROS_IP=`hostname -I`
-export ROS_MASTER_URI=http://jeasinema-vm:11311
+export ROS_MASTER_URI=http://127.0.0.1:11311
 export PATH=$PATH:/home/jeasinema/Documents/github/CodeSourcery/Sourcery_CodeBench_Lite_for_Xilinx_GNU_Linux/bin
 export CROSS_COMPILE=arm-xilinx-linux-gnueabi-
