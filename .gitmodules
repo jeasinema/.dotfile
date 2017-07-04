@@ -1,3 +1,6 @@
-[submodule "vim-config"]
-	path = vim-config
+[submodule ".vim"]
+	path = .vim
 	url = https://github.com/jeasinema/vim-config.git
+[submodule ".oh-my-zsh"]
+	path = .oh-my-zsh
+	url = https://github.com/robbyrussell/oh-my-zsh.git
