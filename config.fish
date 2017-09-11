@@ -39,3 +39,14 @@ set -x LANG en_US.UTF-8
 set -g fish_user_paths "/usr/local/sbin" $fish_user_paths
 # for google app engine
 set -x PATH $PATH /usr/local/google_appengine
+# for mojoco and gps
+set -x MUJOCO_PY_MJPRO_PATH /Users/jeasinema/.mujoco/mjpro131
+set -x LD_LIBRARY_PATH $LD_LIBRARY_PATH /Users/jeasinema/Documents/workspace/GitHub/gps/build/lib
+set -x LD_LIBRARY_PATH $LD_LIBRARY_PATH /Users/jeasinema/.mujoco/mjpro131/bin
+set -x DYLD_LIBRARY_PATH $DYLD_LIBRARY_PATH /Users/jeasinema/Documents/workspace/GitHub/gps/build/lib
+set -x DYLD_LIBRARY_PATH $DYLD_LIBRARY_PATH /Users/jeasinema/.mujoco/mjpro131/bin
+set -x PYTHONPATH $PYTHONPATH /Users/jeasinema/Documents/workspace/GitHub/gps/build/lib
+# for editor 
+set -x EDITOR /usr/local/bin/vim
+# for rmrash
+alias rm='rmtrash'
