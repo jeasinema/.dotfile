@@ -1,5 +1,5 @@
 [submodule ".vim"]
-	path = vim-config
+	path = .vim
 	url = https://github.com/jeasinema/vim-config.git
 [submodule ".oh-my-zsh"]
 	path = .oh-my-zsh
