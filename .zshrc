@@ -1,11 +1,34 @@
-# Path to your oh-my-zsh installation.
-export ZSH=/home/jeasinema/.oh-my-zsh
+##### antigen ######
+source ~/antigen.zsh
 
+# Load the oh-my-zsh's library.
+antigen use oh-my-zsh
+
+# Bundles from the default repo (robbyrussell's oh-my-zsh).
+antigen bundle git
+antigen bundle heroku
+antigen bundle pip
+antigen bundle lein
+antigen bundle command-not-found
+
+# Syntax highlighting bundle.
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-completions
+antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle zsh-users/zsh-history-substring-search
+
+antigen apply
+# Load the theme.
+antigen theme bira 
+
+##### end of antigen ######
+#
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="bira"
+# ZSH_THEME="bira"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -49,19 +72,11 @@ ZSH_THEME="bira"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
-#oh-my-zsh Plugin
-plugins+=(zsh-syntax-highlighting)
-plugins+=(zsh-completions)
-autoload -U compinit && compinit
-plugins+=(zsh-autosuggestions)
 
-# User configuration
-
+###### User configuration ######
 export PATH=$HOME/bin:/usr/local/bin:$PATH
+autoload -U compinit && compinit
 # export MANPATH="/usr/local/man:$MANPATH"
-
-source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -92,5 +107,8 @@ source $ZSH/oh-my-zsh.sh
 source /opt/ros/kinetic/setup.zsh
 #export ROS_IP=`hostname -I`
 export ROS_MASTER_URI=http://127.0.0.1:11311
-export PATH=$PATH:/home/jeasinema/Documents/github/CodeSourcery/Sourcery_CodeBench_Lite_for_Xilinx_GNU_Linux/bin
+export PATH=$PATH:/home/jeasinema/Documents/github/CodeSourcery/Sourcery_CodeBench_Lite_for_Xilinx_GNU_Linux/bin:/usr/local/cuda/bin
 export CROSS_COMPILE=arm-xilinx-linux-gnueabi-
+export PYTHONPATH=""
+# for libcupti 
+export LD_LIBRARY_PATH="/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH"
