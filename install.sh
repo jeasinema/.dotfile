@@ -2,7 +2,7 @@
 # $FileName: install.sh
 # $Date: 15-09-2017
 # $Purpose: 
-# $LastModified: Fri 15 Sep 2017 03:04:00 PM CST
+# $LastModified: Fri 15 Sep 2017 03:39:37 PM CST
 # $Author: Jeasine Ma [jeasinema[at]gmail[dot]com]
 
 echo "start deployment..."
@@ -16,7 +16,7 @@ rm .vim/bundle
 ln -nsf ~/bundle $(pwd)/.vim/.
 
 ln -nsf $(pwd)/.zshrc ~/.
-ln -nsf $(pwd)/antigen.sh ~/.
+ln -nsf $(pwd)/antigen.sh ~/.antigen.zsh 
 ln -nsf $(pwd)/.gdbinit ~/.
 ln -nsf $(pwd)/.gitconfig ~/.
 ln -nsf $(pwd)/.tmux.conf ~/.
