@@ -11,6 +11,7 @@ import re
 import struct
 import termios
 import traceback
+import math
 
 # Common attributes ------------------------------------------------------------
 
@@ -171,7 +172,8 @@ def check_ge_zero(x):
 def to_unsigned(value, size=8):
     # values from GDB can be used transparently but are not suitable for
     # being printed as unsigned integers, so a conversion is needed
-    return int(value.cast(gdb.Value(0).type)) % (2 ** (size * 8))
+    mask = (2 ** (size * 8)) - 1
+    return int(value.cast(gdb.Value(mask).type)) & mask
 
 def to_string(value):
     # attempt to convert an inferior value to string; OK when (Python 3 ||
@@ -187,8 +189,9 @@ def format_address(address):
     pointer_size = gdb.parse_and_eval('$pc').type.sizeof
     return ('0x{{:0{}x}}').format(pointer_size * 2).format(address)
 
-class Highlighter():
-    def __init__(self, filename):
+class Beautifier():
+    def __init__(self, filename, tab_size=4):
+        self.tab_spaces = ' ' * tab_size
         self.active = False
         if not R.ansi:
             return
@@ -208,6 +211,8 @@ class Highlighter():
             pass
 
     def process(self, source):
+        # convert tabs anyway
+        source = source.replace('\t', self.tab_spaces)
         if self.active:
             import pygments
             source = pygments.highlight(source, self.lexer, self.formatter)
@@ -228,9 +233,9 @@ class Dashboard(gdb.Command):
         Dashboard.LayoutCommand(self)
         # setup style commands
         Dashboard.StyleCommand(self, 'dashboard', R, R.attributes())
-        # enable by default
+        # disabled by default
         self.enabled = None
-        self.enable()
+        self.disable()
 
     def on_continue(self, _):
         # try to contain the GDB messages in a specified area unless the
@@ -291,7 +296,7 @@ class Dashboard(gdb.Command):
 
     def redisplay(self, style_changed=False):
         # manually redisplay the dashboard
-        if self.is_running():
+        if self.is_running() and self.enabled:
             self.render(True, style_changed)
 
     def inferior_pid(self):
@@ -387,7 +392,9 @@ class Dashboard(gdb.Command):
         Dashboard.parse_inits(False)
         # GDB overrides
         run('set pagination off')
-        run('alias -a db = dashboard')
+        # enable and display if possible (program running)
+        dashboard.enable()
+        dashboard.redisplay()
 
     @staticmethod
     def get_term_width(fd=1):  # defaults to the main terminal
@@ -665,7 +672,7 @@ files."""
                 name = directive[not enabled:]
                 try:
                     # it may actually start from last, but in this way repeated
-                    # modules can be handler transparently and without error
+                    # modules can be handled transparently and without error
                     todo = enumerate(modules[last:], start=last)
                     index = next(i for i, m in todo if name == m.name)
                     modules[index].enabled = enabled
@@ -676,7 +683,7 @@ files."""
                     def find_module(x):
                         return x.name == name
                     first_part = modules[:last]
-                    if len(filter(find_module, first_part)) == 0:
+                    if len(list(filter(find_module, first_part))) == 0:
                         Dashboard.err('Cannot find module "{}"'.format(name))
                     else:
                         Dashboard.err('Module "{}" already set'.format(name))
@@ -790,7 +797,7 @@ class Source(Dashboard.Module):
             self.file_name = file_name
             self.ts = ts
             try:
-                highlighter = Highlighter(self.file_name)
+                highlighter = Beautifier(self.file_name, self.tab_size)
                 self.highlighted = highlighter.active
                 with open(self.file_name) as source_file:
                     source = highlighter.process(source_file.read())
@@ -831,6 +838,13 @@ class Source(Dashboard.Module):
                 'default': 5,
                 'type': int,
                 'check': check_ge_zero
+            },
+            'tab-size': {
+                'doc': 'Number of spaces used to display the tab character.',
+                'default': 4,
+                'name': 'tab_size',
+                'type': int,
+                'check': check_gt_zero
             }
         }
 
@@ -884,7 +898,11 @@ instructions constituting the current statement are marked, if available."""
             'intel': '.asm'
         }.get(flavor, '.s')
         # prepare the highlighter
-        highlighter = Highlighter(filename)
+        highlighter = Beautifier(filename)
+        # compute the maximum offset size
+        if func_start:
+            max_offset = max(len(str(abs(asm[0]['addr'] - func_start))),
+                             len(str(abs(asm[-1]['addr'] - func_start))))
         # return the machine code
         max_length = max(instr['length'] for instr in asm)
         inferior = gdb.selected_inferior()
@@ -905,9 +923,9 @@ instructions constituting the current statement are marked, if available."""
             # compute the offset if available
             if self.show_function:
                 if func_start:
-                    max_offset = len(str(asm[-1]['addr'] - func_start))
-                    offset = str(addr - func_start).ljust(max_offset)
-                    func_info = '{}+{} '.format(frame.name(), offset)
+                    offset = '{:+d}'.format(addr - func_start)
+                    offset = offset.ljust(max_offset + 1)  # sign
+                    func_info = '{}{} '.format(frame.name(), offset)
                 else:
                     func_info = '? '
             else:
@@ -968,34 +986,59 @@ location, if available. Optionally list the frame arguments and locals too."""
         return 'Stack'
 
     def lines(self, term_width, style_changed):
-        frames = []
-        number = 0
+        # find the selected frame (i.e., the first to display)
         selected_index = 0
         frame = gdb.newest_frame()
         while frame:
-            frame_lines = []
+            if frame == gdb.selected_frame():
+                break
+            frame = frame.older()
+            selected_index += 1
+        # format up to "limit" frames
+        frames = []
+        number = selected_index
+        more = False
+        while frame:
+            # the first is the selected one
+            selected = (len(frames) == 0)
             # fetch frame info
-            selected = (frame == gdb.selected_frame())
-            if selected:
-                selected_index = number
             style = R.style_selected_1 if selected else R.style_selected_2
             frame_id = ansi(str(number), style)
             info = Stack.get_pc_line(frame, style)
+            frame_lines = []
             frame_lines.append('[{}] {}'.format(frame_id, info))
             # fetch frame arguments and locals
             decorator = gdb.FrameDecorator.FrameDecorator(frame)
+            separator = ansi(', ', R.style_low)
+            strip_newlines = re.compile(r'$\s*', re.MULTILINE)
             if self.show_arguments:
+                def prefix(line):
+                    return Stack.format_line('arg', line)
                 frame_args = decorator.frame_args()
-                args_lines = self.fetch_frame_info(frame, frame_args, 'arg')
+                args_lines = Stack.fetch_frame_info(frame, frame_args)
                 if args_lines:
-                    frame_lines.extend(args_lines)
+                    if self.compact:
+                        args_line = separator.join(args_lines)
+                        args_line = strip_newlines.sub('', args_line)
+                        single_line = prefix(args_line)
+                        frame_lines.append(single_line)
+                    else:
+                        frame_lines.extend(map(prefix, args_lines))
                 else:
                     frame_lines.append(ansi('(no arguments)', R.style_low))
             if self.show_locals:
+                def prefix(line):
+                    return Stack.format_line('loc', line)
                 frame_locals = decorator.frame_locals()
-                locals_lines = self.fetch_frame_info(frame, frame_locals, 'loc')
+                locals_lines = Stack.fetch_frame_info(frame, frame_locals)
                 if locals_lines:
-                    frame_lines.extend(locals_lines)
+                    if self.compact:
+                        locals_line = separator.join(locals_lines)
+                        locals_line = strip_newlines.sub('', locals_line)
+                        single_line = prefix(locals_line)
+                        frame_lines.append(single_line)
+                    else:
+                        frame_lines.extend(map(prefix, locals_lines))
                 else:
                     frame_lines.append(ansi('(no locals)', R.style_low))
             # add frame
@@ -1003,30 +1046,34 @@ location, if available. Optionally list the frame arguments and locals too."""
             # next
             frame = frame.older()
             number += 1
+            # check finished according to the limit
+            if self.limit and len(frames) == self.limit:
+                # more frames to show but limited
+                if frame:
+                    more = True
+                break
         # format the output
-        if not self.limit or self.limit >= len(frames):
-            start = 0
-            end = len(frames)
-            more = False
-        else:
-            start = selected_index
-            end = min(len(frames), start + self.limit)
-            more = (len(frames) - start > self.limit)
         lines = []
-        for frame_lines in frames[start:end]:
+        for frame_lines in frames:
             lines.extend(frame_lines)
         # add the placeholder
         if more:
             lines.append('[{}]'.format(ansi('+', R.style_selected_2)))
         return lines
 
-    def fetch_frame_info(self, frame, data, prefix):
+    @staticmethod
+    def format_line(prefix, line):
         prefix = ansi(prefix, R.style_low)
+        return '{} {}'.format(prefix, line)
+
+    @staticmethod
+    def fetch_frame_info(frame, data):
         lines = []
         for elem in data or []:
             name = elem.sym
+            equal = ansi('=', R.style_low)
             value = to_string(elem.sym.value(frame))
-            lines.append('{} {} = {}'.format(prefix, name, value))
+            lines.append('{} {} {}'.format(name, equal, value))
         return lines
 
     @staticmethod
@@ -1071,6 +1118,11 @@ location, if available. Optionally list the frame arguments and locals too."""
                 'doc': 'Frame locals visibility flag.',
                 'default': False,
                 'name': 'show_locals',
+                'type': bool
+            },
+            'compact': {
+                'doc': 'Single-line display flag.',
+                'default': False,
                 'type': bool
             }
         }
@@ -1223,7 +1275,7 @@ class Registers(Dashboard.Module):
             if '.' in name:
                 continue
             value = gdb.parse_and_eval('${}'.format(name))
-            string_value = self.format_value(value)
+            string_value = Registers.format_value(value)
             changed = self.table and (self.table.get(name, '') != string_value)
             self.table[name] = string_value
             registers.append((name, string_value, changed))
@@ -1250,11 +1302,30 @@ class Registers(Dashboard.Module):
             styled_value = ansi(value.ljust(max_value), value_style)
             partial.append(styled_name + ' ' + styled_value)
         out = []
-        for i in range(0, len(partial), per_line):
-            out.append(' '.join(partial[i:i + per_line]).rstrip())
+        if self.column_major:
+            num_lines = int(math.ceil(float(len(partial)) / per_line))
+            for i in range(num_lines):
+                line = ' '.join(partial[i:len(partial):num_lines]).rstrip()
+                real_n_col = math.ceil(float(len(partial)) / num_lines)
+                line = ' ' * int((per_line - real_n_col) * max_width / 2) + line
+                out.append(line)
+        else:
+            for i in range(0, len(partial), per_line):
+                out.append(' '.join(partial[i:i + per_line]).rstrip())
         return out
 
-    def format_value(self, value):
+    def attributes(self):
+        return {
+            'column-major': {
+                'doc': 'Whether to show registers in columns instead of rows.',
+                'default': False,
+                'name': 'column_major',
+                'type': bool
+            }
+        }
+
+    @staticmethod
+    def format_value(value):
         try:
             if value.type.code in [gdb.TYPE_CODE_INT, gdb.TYPE_CODE_PTR]:
                 int_value = to_unsigned(value, value.type.sizeof)
@@ -1370,7 +1441,7 @@ set python print-stack full
 python Dashboard.start()
 
 # ------------------------------------------------------------------------------
-# Copyright (c) 2015-2016 Andrea Cardaci <cyrus.and@gmail.com>
+# Copyright (c) 2015-2017 Andrea Cardaci <cyrus.and@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
