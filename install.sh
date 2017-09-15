@@ -2,7 +2,7 @@
 # $FileName: install.sh
 # $Date: 15-09-2017
 # $Purpose: 
-# $LastModified: 2017年09月15日 星期五 15时32分17秒
+# $LastModified: 2017年09月15日 星期五 15时46分59秒
 # $Author: Jeasine Ma [jeasinema[at]gmail[dot]com]
 
 echo "start deployment..."
@@ -26,7 +26,7 @@ rm .vim/bundle
 ln -nsf ~/bundle $(pwd)/.vim/.
 
 ln -nsf $(pwd)/.zshrc ~/.
-ln -nsf $(pwd)/antigen.zsh ~/.
+ln -nsf $(pwd)/antigen.zsh ~/.antigen.zsh 
 ln -nsf $(pwd)/.gdbinit ~/.
 ln -nsf $(pwd)/.gitconfig ~/.
 ln -nsf $(pwd)/.tmux.conf ~/.
@@ -39,5 +39,10 @@ vim +PlugUpdate +PlugInstall +qall
 echo "please manually compile ycm kernel by ./install.py --clang-completer"
 exec zsh 
 source ~/.zshrc 
+# remove redundent file 
+rm ~/.antigen/.zcompdump*
+rm ~/.zcompdump*
+exec zsh 
+exit 
 exit 
 echo "done."
