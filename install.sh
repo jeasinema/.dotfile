@@ -2,14 +2,16 @@
 # $FileName: install.sh
 # $Date: 15-09-2017
 # $Purpose: 
-# $LastModified: Fri 15 Sep 2017 03:49:08 PM CST
+# $LastModified: Fri Sep 15 15:55:41 2017
 # $Author: Jeasine Ma [jeasinema[at]gmail[dot]com]
 
 echo "start deployment..."
+echo 
 # update submodule 
 git submodule sync
 git submodule update
 git submodule foreach git checkout HEAD 
+git submodule foreach git pull 
 
 # checkout some submodule manually
 cd .vim 
@@ -36,7 +38,9 @@ ln -nsf $(pwd)/.vim/.vimrc ~/.
 
 # install plugin 
 vim +PlugUpdate +PlugInstall +qall 
+echo 
 echo "please manually compile ycm kernel by ./install.py --clang-completer"
+echo 
 exec zsh 
 source ~/.zshrc 
 # remove redundent file 
@@ -45,4 +49,5 @@ rm ~/.zcompdump*
 exec zsh 
 exit 
 exit 
+echo 
 echo "done."
