@@ -2,7 +2,7 @@
 # $FileName: install.sh
 # $Date: 15-09-2017
 # $Purpose: 
-# $LastModified: Fri 15 Sep 2017 02:57:21 PM CST
+# $LastModified: Fri 15 Sep 2017 03:04:00 PM CST
 # $Author: Jeasine Ma [jeasinema[at]gmail[dot]com]
 
 echo "start deployment..."
@@ -11,14 +11,18 @@ wget -P . git.io/.gdbinit
 curl -L git.io/antigen > antigen.zsh
 
 # build link 
-ln -s $(pwd)/.zshrc ~/.
-ln -s $(pwd)/antigen.sh ~/.
-ln -s $(pwd)/.gdbinit ~/.
-ln -s $(pwd)/.gitconfig ~/.
-ln -s $(pwd)/.tmux.conf ~/.
-ln -s $(pwd)/.vim ~/.
-ln -s $(pwd)/.ycm_extra_conf.py ~/.
-ln -s $(pwd)/.vim/.vimrc ~/.
+mkdir -p ~/bundle  
+rm .vim/bundle
+ln -nsf ~/bundle $(pwd)/.vim/.
+
+ln -nsf $(pwd)/.zshrc ~/.
+ln -nsf $(pwd)/antigen.sh ~/.
+ln -nsf $(pwd)/.gdbinit ~/.
+ln -nsf $(pwd)/.gitconfig ~/.
+ln -nsf $(pwd)/.tmux.conf ~/.
+ln -nsf $(pwd)/.vim ~/.
+ln -nsf $(pwd)/.ycm_extra_conf.py ~/.
+ln -nsf $(pwd)/.vim/.vimrc ~/.
 
 # install plugin 
 vim +PlugUpdate +PlugInstall +qall 
