@@ -50,3 +50,9 @@ set -x PYTHONPATH $PYTHONPATH /Users/jeasinema/Documents/workspace/GitHub/gps/bu
 set -x EDITOR /usr/local/bin/vim
 # for rmrash
 alias rm='rmtrash'
+# for mactex 
+set -x PATH $PATH /usr/local/texlive/2017/bin/x86_64-darwin
+# for golang
+set -x PATH $PATH (go env GOROOT)/bin 
+set -x PATH $PATH (go env GOPATH)/bin
+set -x GOPATH $GOPATH (go env GOPATH)
