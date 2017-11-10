@@ -47,6 +47,9 @@ source ~/.zshrc
 rm ~/.antigen/.zcompdump*
 rm ~/.zcompdump*
 exec zsh 
+# tmux source 
+tmux source ~/.tmux.conf
+
 exit 
 exit 
 echo 
