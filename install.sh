@@ -14,6 +14,7 @@ git submodule foreach git checkout HEAD
 git submodule foreach git pull 
 
 # checkout some submodule manually
+mv vim-config .vim
 cd .vim 
 git checkout HEAD 
 cd ..

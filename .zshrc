@@ -1,4 +1,5 @@
 ##### antigen ######
+ANTIGEN_CACHE=false
 source ~/.antigen.zsh
 
 # Load the oh-my-zsh's library.
@@ -104,11 +105,11 @@ autoload -U compinit && compinit
 # alias ohmyzsh="mate ~/.oh-my-zsh
 
 #for ROS
-source /opt/ros/kinetic/setup.zsh
-#export ROS_IP=`hostname -I`
+[ ! -f /home/robot/ros_catkin_ws/install_isolated/setup.zsh ] && source /home/robot/ros_catkin_ws/install_isolated/setup.zsh
+[ ! -f /home/robot/ws_moveit/devel/setup.zsh ] && source /home/robot/ws_moveit/devel/setup.zsh
+export ROS_IP=`hostname -I`
 export ROS_MASTER_URI=http://127.0.0.1:11311
-export PATH=$PATH:/home/jeasinema/Documents/github/CodeSourcery/Sourcery_CodeBench_Lite_for_Xilinx_GNU_Linux/bin:/usr/local/cuda/bin
-export CROSS_COMPILE=arm-xilinx-linux-gnueabi-
 export PYTHONPATH=""
 # for libcupti 
-export LD_LIBRARY_PATH="/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="/usr/lib/cuda/lib64:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH=/home/robot/.mujoco/mjpro150/bin:$LD_LIBRARY_PATH 
