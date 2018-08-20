@@ -7,17 +7,10 @@
 
 echo "start deployment..."
 echo 
-# update submodule 
-git submodule sync
-git submodule update
-git submodule foreach git checkout HEAD 
-git submodule foreach git pull 
 
 # checkout some submodule manually
+git clone https://github.com/jeasinema/vim-config
 mv vim-config .vim
-cd .vim 
-git checkout HEAD 
-cd ..
 
 # update some file 
 curl -L  git.io/.gdbinit  > .gdbinit
