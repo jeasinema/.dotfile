@@ -21,7 +21,7 @@ antigen bundle zsh-users/zsh-history-substring-search
 
 antigen apply
 # Load the theme.
-antigen theme bira 
+antigen theme bira
 
 ##### end of antigen ######
 #
@@ -110,6 +110,7 @@ autoload -U compinit && compinit
 export ROS_IP=`hostname -I`
 export ROS_MASTER_URI=http://127.0.0.1:11311
 export PYTHONPATH=""
-# for libcupti 
+# for libcupti
 export LD_LIBRARY_PATH="/usr/lib/cuda/lib64:$LD_LIBRARY_PATH"
-export LD_LIBRARY_PATH=/home/robot/.mujoco/mjpro150/bin:$LD_LIBRARY_PATH 
+export LD_LIBRARY_PATH=/home/robot/.mujoco/mjpro150/bin:$LD_LIBRARY_PATH
+export PATH="/home1/mxj/anaconda3/bin:$PATH"
