@@ -7,16 +7,10 @@
 
 echo "start deployment..."
 echo 
-# update submodule 
-git submodule sync
-git submodule update
-git submodule foreach git checkout HEAD 
-git submodule foreach git pull 
 
 # checkout some submodule manually
-cd .vim 
-git checkout HEAD 
-cd ..
+git clone https://github.com/jeasinema/vim-config
+mv vim-config .vim
 
 # update some file 
 curl -L  git.io/.gdbinit  > .gdbinit
@@ -47,6 +41,9 @@ source ~/.zshrc
 rm ~/.antigen/.zcompdump*
 rm ~/.zcompdump*
 exec zsh 
+# tmux source 
+tmux source ~/.tmux.conf
+
 exit 
 exit 
 echo 
