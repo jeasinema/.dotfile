@@ -38,7 +38,7 @@ set -x LC_ALL en_US.UTF-8
 set -x LANG en_US.UTF-8
 set -g fish_user_paths "/usr/local/sbin" $fish_user_paths
 # for google app engine
-set -x PATH $PATH /usr/local/google_appengine
+# set -x PATH $PATH /usr/local/google_appengine
 # for mojoco and gps
 set -x MUJOCO_PY_MJPRO_PATH /Users/jeasinema/.mujoco/mjpro131
 set -x LD_LIBRARY_PATH $LD_LIBRARY_PATH /Users/jeasinema/Documents/workspace/GitHub/gps/build/lib
@@ -46,13 +46,19 @@ set -x LD_LIBRARY_PATH $LD_LIBRARY_PATH /Users/jeasinema/.mujoco/mjpro131/bin
 set -x DYLD_LIBRARY_PATH $DYLD_LIBRARY_PATH /Users/jeasinema/Documents/workspace/GitHub/gps/build/lib
 set -x DYLD_LIBRARY_PATH $DYLD_LIBRARY_PATH /Users/jeasinema/.mujoco/mjpro131/bin
 set -x PYTHONPATH $PYTHONPATH /Users/jeasinema/Documents/workspace/GitHub/gps/build/lib
-# for editor 
+# for editor
 set -x EDITOR /usr/local/bin/vim
 # for rmrash
 alias rm='rmtrash'
-# for mactex 
+# for mactex
 set -x PATH $PATH /usr/local/texlive/2017/bin/x86_64-darwin
 # for golang
-set -x PATH $PATH (go env GOROOT)/bin 
+set -x PATH $PATH (go env GOROOT)/bin
 set -x PATH $PATH (go env GOPATH)/bin
 set -x GOPATH $GOPATH (go env GOPATH)
+# for tuna homebrew bottles
+set -x HOMEBREW_BOTTLE_DOMAIN https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles
+# for thefuck
+thefuck --alias | source
+# for arm toolchains
+set -x PATH $PATH /Users/jeasinema/Downloads/gcc-arm-none-eabi-7-2018-q2-update/bin
