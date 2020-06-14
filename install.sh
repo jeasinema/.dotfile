@@ -5,6 +5,14 @@
 # $LastModified: Fri Sep 15 15:55:41 2017
 # $Author: Jeasine Ma [jeasinema[at]gmail[dot]com]
 
+verlte() {
+    [  "$1" = "$(echo -e "$1\n$2" | sort -V | head -n1)" ]
+}
+
+verlt() {
+    [ "$1" = "$2" ] && return 1 || verlte $1 $2
+}
+
 echo "start deployment..."
 echo 
 
@@ -26,6 +34,7 @@ ln -nsf $(pwd)/antigen.zsh ~/.antigen.zsh
 ln -nsf $(pwd)/.gdbinit ~/.
 ln -nsf $(pwd)/.gitconfig ~/.
 ln -nsf $(pwd)/.tmux.conf ~/.
+verlte 2.9 $(tmux -V | awk '{print $2}')  &&  ln -nsf $(pwd)/.tmux.conf.3x ~/.tmux.conf || ln -nsf $(pwd)/.tmux.conf.2x ~/.tmux.conf
 ln -nsf $(pwd)/.vim ~/.
 ln -nsf $(pwd)/.ycm_extra_conf.py ~/.
 ln -nsf $(pwd)/.vim/.vimrc ~/.
