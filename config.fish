@@ -27,8 +27,6 @@ set -x PKG_CONFIG_PATH $PKG_CONFIG_PATH /usr/local/Cellar/libuv/1.9.1/lib/pkgcon
 function gi
     curl -L -s https://www.gitignore.io/api/$argv
 end
-#for cling
-set -x PATH $PATH ~/Downloads/cling_2016-10-09_mac1010/bin
 #for linaro armlinux-gcc
 set -x PATH $PATH /usr/local/linaro/arm-linux-gnueabihf/bin
 # for homebrew bottles
@@ -57,8 +55,9 @@ set -x PATH $PATH (go env GOROOT)/bin
 set -x PATH $PATH (go env GOPATH)/bin
 set -x GOPATH $GOPATH (go env GOPATH)
 # for tuna homebrew bottles
-set -x HOMEBREW_BOTTLE_DOMAIN https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles
+# set -x HOMEBREW_BOTTLE_DOMAIN https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles
 # for thefuck
 # thefuck --alias | source
 # for arm toolchains
 set -x PATH $PATH /Users/jeasinema/Downloads/gcc-arm-none-eabi-7-2018-q2-update/bin
+set -g fish_user_paths "/usr/local/opt/opencv@2/bin" $fish_user_paths
