@@ -132,4 +132,8 @@ set -g message-style fg=colour232,bg=colour166,bold
 # C-k to clear current panel
 bind -n C-k send-keys -R \; clear-history
 
+# copy-paste in a gnome-terminal
+# see: https://unix.stackexchange.com/questions/348913/copy-selection-to-a-clipboard-in-tmux/349020
+set-option -s set-clipboard off
+bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
 ################basic configuration end
