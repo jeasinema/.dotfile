@@ -1,9 +1,3 @@
-# !/bin/bash
-# $FileName: install.sh
-# $Date: 15-09-2017
-# $Purpose: 
-# $LastModified: Fri Sep 15 15:55:41 2017
-# $Author: Jeasine Ma [jeasinema[at]gmail[dot]com]
 
 verlte() {
     [  "$1" = "$(echo -e "$1\n$2" | sort -V | head -n1)" ]
@@ -55,5 +49,6 @@ tmux source ~/.tmux.conf
 
 exit 
 exit 
+echo "Please install xclip to allow copy-paste in tmux, ex. sudo apt install xclip"
 echo 
 echo "done."
