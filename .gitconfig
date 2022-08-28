@@ -4,6 +4,9 @@
 
 [alias]
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+        fl = log -u
+        b = blame
+        s = show
 
 [merge]
 	tool = vimdiff
