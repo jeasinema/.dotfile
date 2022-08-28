@@ -1,5 +1,5 @@
 [user]
-	name = Jeasine Ma
+	name = Xiaojian Ma
 	email = jeasinema@gmail.com
 
 [alias]
@@ -10,10 +10,10 @@
 
 [core]
 	editor = vim
-    excludesfile = ~/.gitignore_global
+        excludesfile = ~/.gitignore_global
 
 [diff]
-    tool = vimdiff
+        tool = vimdiff
 
 [push]
-	default = simple
+        default = simple
