@@ -14,10 +14,11 @@ antigen bundle command-not-found
 
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
-antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-completions
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle zsh-users/zsh-history-substring-search
+
+autoload -Uz compinit && compinit -u
 
 antigen apply
 # Load the theme.
@@ -75,8 +76,6 @@ antigen theme bira
 # Add wisely, as too many plugins slow down shell startup.
 
 ###### User configuration ######
-export PATH=$HOME/bin:/usr/local/bin:$PATH
-autoload -U compinit && compinit
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
