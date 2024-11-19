@@ -52,3 +52,6 @@ exit
 echo "Please install xclip to allow copy-paste in tmux, ex. sudo apt install xclip"
 echo 
 echo "done."
+
+# for macOS
+# omf install yimmy
